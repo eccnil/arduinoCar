@@ -5,33 +5,21 @@
 class Servo
 {
 private:
-    /* data */
     int direccion;
 public:
-    Servo(int direccion);
-    ~Servo();
-    void init();
+    Servo(int direccion) { 
+        this->direccion = direccion;
+    }
+    ~Servo() {}
+    void init() {
+        Wire.begin();
+    }
     //0 - 256
-    void move(uint8_t angulo);
+    void move(uint8_t angulo) {
+        Wire.beginTransmission(direccion); 
+        Wire.write(angulo);        // sends five bytes
+        Wire.endTransmission(); 
+    }
 };
-
-Servo::Servo(int direccion)
-{
-    this->direccion = direccion;
-}
-
-Servo::~Servo()
-{
-}
-
-void Servo::init(){
-    Wire.begin();
-}
-
-void  Servo::move (uint8_t angulo){
-    Wire.beginTransmission(direccion); 
-    Wire.write(angulo);        // sends five bytes
-    Wire.endTransmission(); 
-}
 
 #endif
