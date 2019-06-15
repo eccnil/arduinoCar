@@ -19,6 +19,10 @@ public:
   void move (int speedPercent ){
     int pmwInput = map(abs(speedPercent),0,MIN_INPUT,100,255);
     auto direccion = speedPercent > 0 ? HIGH :  LOW;
+    move (pmwInput, direccion);
+  }
+  //speed range (0, 255) y (HIG | LOW)
+  void move (int pmwInput, int direccion ){
     analogWrite(pinPow,pmwInput);
     digitalWrite(pintDir,direccion);
   }
