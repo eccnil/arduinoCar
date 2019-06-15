@@ -23,7 +23,7 @@ void setup() {
 
 void loop() {
   ruedaIzq.move(700,true);
-  ruedaDer.move(700,false);
+  ruedaDer.move(600,false);
   cuello.move(128);
   delay(2000);
   ruedaIzq.move(1000,true);
