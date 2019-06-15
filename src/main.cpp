@@ -22,16 +22,16 @@ void setup() {
 }
 
 void loop() {
-  ruedaIzq.move(700,true);
-  ruedaDer.move(600,false);
+  ruedaIzq.move(100);
+  ruedaDer.move(60);
   cuello.move(128);
   delay(2000);
-  ruedaIzq.move(1000,true);
-  ruedaDer.move(1000,true);
+  ruedaIzq.move(20);
+  ruedaDer.move(10);
   cuello.move(255);
   delay(2000);
-  ruedaIzq.move(700,false);
-  ruedaDer.move(0,true);
+  ruedaIzq.move(-40);
+  ruedaDer.move(-30);
   cuello.move(1);
   delay(2000);
 }
