@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "Wheel.h"
 #include "Servo.h"
+#include "Coche.h"
 
 
 #define PIN_MOTOR_A_POW 9
@@ -13,25 +14,23 @@
 
 Wheel ruedaIzq(PIN_MOTOR_B_POW, PIN_MOTOR_B_DIR);
 Wheel ruedaDer(PIN_MOTOR_A_POW, PIN_MOTOR_A_DIR);
+Coche coche(&ruedaIzq, &ruedaDer);
 Servo cuello(DIRECCION_I2C_CUELLO);
 
 void setup() {
-  ruedaIzq.init();
-  ruedaDer.init();
+  Serial.begin(9600);
+  coche.init();
   cuello.init();
 }
 
 void loop() {
-  ruedaIzq.move(100);
-  ruedaDer.move(60);
-  cuello.move(128);
+  coche.setVelocidad(100);
+  coche.setGiro(0);
   delay(2000);
-  ruedaIzq.move(20);
-  ruedaDer.move(10);
-  cuello.move(255);
+  coche.setVelocidad(100);
+  coche.setGiro(100);
   delay(2000);
-  ruedaIzq.move(-40);
-  ruedaDer.move(-30);
-  cuello.move(1);
+  coche.setVelocidad(10);
+  coche.setGiro(-100);
   delay(2000);
 }
