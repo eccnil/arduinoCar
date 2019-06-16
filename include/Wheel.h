@@ -5,7 +5,7 @@
 class  Wheel {
   int pinPow;
   int pintDir;
-  static const int MIN_INPUT = 70; //min value that produces movement (adjust it)
+  static const int MIN_INPUT = 35; //min value that produces movement (adjust it)
 public:
   Wheel(int PIN_POW, int PIN_DIR){
     pinPow=PIN_POW;
