@@ -17,7 +17,7 @@ public:
   }
   //speed range (-100, 100)
   void move (int speedPercent ){
-    int pmwInput = map(abs(speedPercent),0,MIN_INPUT,100,255);
+    int pmwInput = map(abs(speedPercent), 0,100, MIN_INPUT,255);
     auto direccion = speedPercent > 0 ? HIGH :  LOW;
     move (pmwInput, direccion);
   }
