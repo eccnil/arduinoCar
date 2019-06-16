@@ -8,7 +8,7 @@
 #define PIN_MOTOR_B_POW 6
 #define PIN_MOTOR_B_DIR 7
 
-#define DIRECCION_I2C_CUELLO 0x42
+#define DIRECCION_I2C_CUELLO 0x40
 
 
 Wheel ruedaIzq(PIN_MOTOR_B_POW, PIN_MOTOR_B_DIR);
