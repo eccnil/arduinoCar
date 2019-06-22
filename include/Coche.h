@@ -36,17 +36,15 @@ public:
 };
 
 void Coche::actualizaRuedas(){
-    int d,i;
-
     int delta = map (giro , -100 , 100 , - maxDeltaGiro / 2 ,  maxDeltaGiro / 2);
-
-    d = velocidad + delta;
-    i = velocidad - delta;
+    int d = velocidad + delta;
+    int i = velocidad - delta;
 
     if (d > 100) { i -= d-100; d = 100; }
     if (i > 100) { d -= i-100; i = 100; }
     if (d < -100) { i -= d - -100; d = -100; }
     if (i < -100) { d -= i - -100; i = -100; }
+
     Serial.print("potencia a los motores: " );Serial.print(d);Serial.print(" , ");Serial.println(i);
     ruedaDer->move(d);
     ruedaIzq->move(i);
