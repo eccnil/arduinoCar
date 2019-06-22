@@ -5,9 +5,9 @@
 
 class Coche {
     // maxima diferencia de potencia en las ruedas de cada lado
-    static const byte maxDeltaGiro = 40;
-    byte velocidad = 0;
-    byte giro = 0;
+    static const int maxDeltaGiro = 60;
+    int velocidad = 0;
+    int giro = 0;
     void actualizaRuedas();
 public:
     Wheel *ruedaIzq ;
@@ -21,13 +21,13 @@ public:
         ruedaDer->init();
         Serial.println("init coche");
     }
-    void setVelocidad(byte porcentaje){
+    void setVelocidad(int porcentaje){
         if (porcentaje != velocidad){
             velocidad = porcentaje;
             actualizaRuedas();
         }
     }
-    void setGiro(byte porcentajeDerecha){
+    void setGiro(int porcentajeDerecha){
             if (porcentajeDerecha != giro){
             giro = porcentajeDerecha;
             actualizaRuedas();

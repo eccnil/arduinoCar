@@ -25,12 +25,15 @@ void setup() {
 
 void loop() {
   coche.setVelocidad(100);
-  coche.setGiro(0);
+  coche.setGiro(50);
+  delay(2000);
+  coche.setVelocidad(-100);
+  coche.setGiro(50);
   delay(2000);
   coche.setVelocidad(100);
-  coche.setGiro(100);
+  coche.setGiro(0);
   delay(2000);
-  coche.setVelocidad(10);
-  coche.setGiro(-100);
+  coche.setVelocidad(-100);
+  coche.setGiro(0);
   delay(2000);
 }
