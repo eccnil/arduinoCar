@@ -8,8 +8,8 @@
 #define PIN_MOTOR_B_POW 6
 #define PIN_MOTOR_B_DIR 7
 #define PIN_CUELLO 5
-#define CUELLO_MAX 2000
-#define CUELLO_MIN 1000
+#define CUELLO_MAX 2580
+#define CUELLO_MIN 580
 
 Wheel ruedaIzq(PIN_MOTOR_B_POW, PIN_MOTOR_B_DIR);
 Wheel ruedaDer(PIN_MOTOR_A_POW, PIN_MOTOR_A_DIR);
@@ -25,8 +25,8 @@ void setup() {
 void loop() {
   coche.setVelocidad(100);
   coche.setGiro(50);
-  cuello.write(70);
-  delay(2000);
+  cuello.write(0);
+  delay(4000);
   coche.setVelocidad(-100);
   coche.setGiro(50);
   cuello.write(90);
@@ -34,7 +34,7 @@ void loop() {
   coche.setVelocidad(100);
   coche.setGiro(0);
   cuello.write(0);
-  delay(2000);
+  delay(4000);
   coche.setVelocidad(-100);
   coche.setGiro(0);
   cuello.write(90);
