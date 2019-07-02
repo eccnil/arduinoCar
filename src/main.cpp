@@ -3,6 +3,7 @@
 #include <Servo.h>
 #include "Coche.h"
 #include <NewPing.h> //sonar
+#include "Radar.h"
 
 #define PIN_MOTOR_A_POW 9
 #define PIN_MOTOR_A_DIR 8
@@ -20,44 +21,26 @@ Wheel ruedaDer(PIN_MOTOR_A_POW, PIN_MOTOR_A_DIR);
 Coche coche(&ruedaIzq, &ruedaDer);
 Servo cuello;
 NewPing ojos(SONAR_TRIGGER_PIN, SONAR_ECHO_PIN, SONAR_DISTANCE);
+Radar vigilante(&cuello, &ojos);
+int distanciaFrente,distanciaIzquierda,distanciaDerecha = 0;
 
 void setup() {
   Serial.begin(9600);
   coche.init();
   cuello.attach(PIN_CUELLO, CUELLO_MIN, CUELLO_MAX);
-
+  vigilante.agregarAngulo(90, &distanciaFrente);
+  vigilante.agregarAngulo(60, &distanciaDerecha);
+  vigilante.agregarAngulo(120, &distanciaIzquierda);
 }
 
-int mira(int angulo, String texto){
-  int distance = 0;
-  cuello.write(angulo);
-  delay(200);
-  distance = ojos.ping_cm();
-  Serial.print (texto);
-  Serial.println (distance);
-  return distance;
-}
 
 void loop() {
-  coche.setVelocidad(100);
-  coche.setGiro(50);
-  mira(0, "derecha ");
-  delay(2000);
-  coche.setVelocidad(-100);
-  coche.setGiro(50);
-  mira(90, "frente ");
-  delay(2000);
-  coche.setVelocidad(100);
-  coche.setGiro(0);
-  mira(180, "izquierda ");
-  delay(2000);
-  coche.setVelocidad(-100);
-  coche.setGiro(0);
-  mira(90, "frente ");
-  delay(2000);
-  coche.setVelocidad(0);
-  coche.setGiro(-100);
-  cuello.write(180);
-  mira(90, "frente ");
-  delay(2000);
+  vigilante.loop();
+  Serial.print(" <");
+  Serial.print(distanciaIzquierda);
+  Serial.print(" ^");
+  Serial.print(distanciaFrente);
+  Serial.print(" >");
+  Serial.print(distanciaDerecha);
+  Serial.println();
 }
