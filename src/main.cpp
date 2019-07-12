@@ -35,7 +35,23 @@ void setup() {
 
 
 void loop() {
+  int velocidad;
   vigilante.loop();
+  coche.setGiro(0);
+  velocidad  = 100;
+
+  bool nadacerca = distanciaFrente == 0 || distanciaFrente > 25;
+   nadacerca = nadacerca && (distanciaDerecha == 0 || distanciaDerecha > 20);
+   nadacerca = nadacerca && (distanciaIzquierda == 0 || distanciaIzquierda > 20); 
+  if(nadacerca){
+    coche.setVelocidad(velocidad);
+  } else {
+    coche.setVelocidad(0);
+    Serial.print("para!");
+  }
+
+
+  
   Serial.print(" <");
   Serial.print(distanciaIzquierda);
   Serial.print(" ^");
