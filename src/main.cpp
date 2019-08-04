@@ -4,6 +4,7 @@
 #include "Coche.h"
 #include <NewPing.h> //sonar
 #include "Radar.h"
+#include <PSX.h>
 
 #define PIN_MOTOR_A_POW 9
 #define PIN_MOTOR_A_DIR 8
@@ -39,7 +40,9 @@ void loop() {
   vigilante.loop();
   coche.setGiro(0);
   velocidad  = 100;
+//leer velocidad del mando a distancia
 
+//haemos que los sensores nos frenen si vamos a chocar
   bool nadacerca = distanciaFrente == 0 || distanciaFrente > 25;
    nadacerca = nadacerca && (distanciaDerecha == 0 || distanciaDerecha > 20);
    nadacerca = nadacerca && (distanciaIzquierda == 0 || distanciaIzquierda > 20); 
