@@ -22,6 +22,7 @@ public:
     byte getJoistickIzquierdoY() {return getJoistick('y');}
     byte getJoistickDerechoX() {return getJoistick('X');}
     byte getJoistickDerechoY() {return getJoistick('Y');}
+    PSX::PSXDATA getBottones(){return lectura;}
 private:
     static const size_t USHORT_BIT = 8 * sizeof(byte);
     static byte ConvertMsbFirstToLsbFirst(const byte input);
