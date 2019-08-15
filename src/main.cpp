@@ -58,6 +58,7 @@ void loop() {
   velocidad = corregirVelocidad(acelerador);
   giro = volante; //al volante de momento no le hacemos nada
 
+  //actuar sobre los motores
   coche.setGiro(giro);
   coche.setVelocidad(velocidad);
 
