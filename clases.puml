@@ -1,0 +1,30 @@
+@startuml
+
+class Coche{
+    avanza()
+    gira()
+}
+class Mando {
+    getBtones(boton)
+    getJoystick(joystick)
+    loop()
+}
+class Radar{
+    agregarAngulo(angulo, &distancia)
+    loop()
+}
+class Servo{
+    write()
+}
+class Ping{
+    pingCM()
+}
+class Rueda{
+    mueve()
+}
+
+Coche o-- Rueda : ruedaIzq
+Coche o-- Rueda : ruedaDer
+Radar o-- Ping
+Radar o-- Servo
+@enduml
