@@ -1,26 +1,38 @@
 @startuml
 
 class Coche{
-    avanza()
-    gira()
+    avanza(%)
+    gira(%)
+    ..
+    init()
 }
 class Mando {
-    getBtones(boton)
+    getBotones(boton)
     getJoystick(joystick)
+    ..
+    init()
     loop()
 }
 class Radar{
     agregarAngulo(angulo, &distancia)
+    ..
+    init()
     loop()
 }
 class Servo{
-    write()
+    write(angulo)
+    ..
+    init()
 }
 class Ping{
-    pingCM()
+    pingcm()
+    ..
+    init()
 }
 class Rueda{
-    mueve()
+    mueve(%)
+    ..
+    init()
 }
 
 Coche o-- Rueda : ruedaIzq
