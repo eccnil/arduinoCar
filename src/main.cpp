@@ -30,6 +30,8 @@ NewPing ojos(SONAR_TRIGGER_PIN, SONAR_ECHO_PIN, SONAR_DISTANCE);
 Radar vigilante(&cuello, &ojos);
 int distanciaFrente,distanciaIzquierda,distanciaDerecha = 0;
 
+int corregirVelocidad(int);
+
 void setup() {
   Serial.begin(9600);
   coche.init();
@@ -53,31 +55,43 @@ void loop() {
   volante = mando.getJoistickDerechoX();
   
   //aplicar logica a las intenciones
-  coche.setGiro(volante);
+  velocidad = corregirVelocidad(acelerador);
+  giro = volante; //al volante de momento no le hacemos nada
 
-//haemos que los sensores nos frenen si vamos a chocar
-  bool nadacerca = distanciaFrente == 0 || distanciaFrente > 25;
-   nadacerca = nadacerca && (distanciaDerecha == 0 || distanciaDerecha > 20);
-   nadacerca = nadacerca && (distanciaIzquierda == 0 || distanciaIzquierda > 20); 
-  if(nadacerca){
-    coche.setVelocidad(velocidad);
-  } else {
-    coche.setVelocidad(0);
-    Serial.print("para!");
-  }
-
+  coche.setGiro(giro);
+  coche.setVelocidad(velocidad);
 
   // depuración
   Serial.print(" ** mando: acelerador ");
   Serial.print(acelerador);
-  Serial.print("   volante ");
+  Serial.print(" volante ");
   Serial.print(volante);
-  Serial.print(" ** ");
+  Serial.print(" ** sensor: ");
   Serial.print(" <");
   Serial.print(distanciaIzquierda);
   Serial.print(" ^");
   Serial.print(distanciaFrente);
   Serial.print(" >");
   Serial.print(distanciaDerecha);
+  Serial.print(" ** motores: velocidad: ");
+  Serial.print(velocidad);
+  Serial.print(" giro: ");
+  Serial.print(giro);
+  
   Serial.println();
+}
+
+int corregirVelocidad( int v){
+  int result;
+  //haemos que los sensores nos frenen si vamos a chocar
+  bool nadacerca = distanciaFrente == 0 || distanciaFrente > 25;
+   nadacerca = nadacerca && (distanciaDerecha == 0 || distanciaDerecha > 20);
+   nadacerca = nadacerca && (distanciaIzquierda == 0 || distanciaIzquierda > 20); 
+  if(nadacerca){
+    result = v;
+  } else {
+    result = 0;
+    Serial.print("para!");
+  }
+  return result;
 }

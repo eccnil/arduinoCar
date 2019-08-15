@@ -57,7 +57,7 @@ byte Mando::getJoistick(char eje){
     if(anyRead){
         rawData = getJoistickRaw(eje);
         unscale = ( eje=='x' || eje == 'X' ) ? 0 : 255 ; //la escala del eje y está invertida, con esta variable la corregimos
-        read = unscale-ConvertMsbFirstToLsbFirst(lectura.JoyRightY);
+        read = unscale-ConvertMsbFirstToLsbFirst(rawData);
         scaled = map(read,0,255,-100,100);
         return scaled;
     }
