@@ -56,12 +56,13 @@ void loop() {
   
   //aplicar logica a las intenciones
   velocidad = corregirVelocidad(acelerador);
-  giro = volante; //al volante de momento no le hacemos nada
+  giro = 0; //al volante de momento no le hacemos nada
 
   coche.setGiro(giro);
   coche.setVelocidad(velocidad);
 
   // depuración
+  /**
   Serial.print(" ** mando: acelerador ");
   Serial.print(acelerador);
   Serial.print(" volante ");
@@ -79,9 +80,12 @@ void loop() {
   Serial.print(giro);
   
   Serial.println();
+  */
 }
 
 int corregirVelocidad( int v){
+  //traducir 0-100 a -100 +100
+  v = v*2 - 100;
   int result;
   //haemos que los sensores nos frenen si vamos a chocar
   bool nadacerca = distanciaFrente == 0 || distanciaFrente > 25;
@@ -93,5 +97,7 @@ int corregirVelocidad( int v){
     result = 0;
     Serial.print("para!");
   }
+  //sesgo por el mando que tenemos (zona muerta)
+  if(result < 5 && result > -5 ) result = 0;
   return result;
 }
