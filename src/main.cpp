@@ -31,6 +31,7 @@ Radar vigilante(&cuello, &ojos);
 int distanciaFrente,distanciaIzquierda,distanciaDerecha = 0;
 
 int corregirVelocidad(int);
+int corregirGiro(int);
 
 void setup() {
   Serial.begin(9600);
@@ -56,13 +57,13 @@ void loop() {
   
   //aplicar logica a las intenciones
   velocidad = corregirVelocidad(acelerador);
-  giro = 0; //al volante de momento no le hacemos nada
+  giro = corregirGiro(volante);
 
   coche.setGiro(giro);
   coche.setVelocidad(velocidad);
 
   // depuración
-  /**
+  
   Serial.print(" ** mando: acelerador ");
   Serial.print(acelerador);
   Serial.print(" volante ");
@@ -80,7 +81,7 @@ void loop() {
   Serial.print(giro);
   
   Serial.println();
-  */
+  
 }
 
 int corregirVelocidad( int v){
@@ -91,7 +92,7 @@ int corregirVelocidad( int v){
   bool nadacerca = distanciaFrente == 0 || distanciaFrente > 25;
    nadacerca = nadacerca && (distanciaDerecha == 0 || distanciaDerecha > 20);
    nadacerca = nadacerca && (distanciaIzquierda == 0 || distanciaIzquierda > 20); 
-  if(nadacerca){
+  if(nadacerca || v <0 ){
     result = v;
   } else {
     result = 0;
@@ -100,4 +101,10 @@ int corregirVelocidad( int v){
   //sesgo por el mando que tenemos (zona muerta)
   if(result < 5 && result > -5 ) result = 0;
   return result;
+}
+
+int corregirGiro(int v){
+  v = 100 - v; //cambio de escala
+  v = v*2 - 100;
+  return v;
 }
