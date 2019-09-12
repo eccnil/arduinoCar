@@ -21,8 +21,8 @@
 #define SONAR_TRIGGER_PIN 11
 #define SONAR_DISTANCE 200
 
-Wheel ruedaIzq(PIN_MOTOR_B_POW, PIN_MOTOR_B_DIR);
-Wheel ruedaDer(PIN_MOTOR_A_POW, PIN_MOTOR_A_DIR);
+Wheel ruedaDer(PIN_MOTOR_B_POW, PIN_MOTOR_B_DIR);
+Wheel ruedaIzq(PIN_MOTOR_A_POW, PIN_MOTOR_A_DIR);
 Coche coche(&ruedaIzq, &ruedaDer);
 Mando mando (PIN_MANDO_DATA, PIN_MANDO_CMD, PIN_MANDO_ATTENTION, PIN_MANDO_CLOCK);
 Servo cuello;
@@ -53,7 +53,8 @@ void loop() {
 
   //leer velocidad y giro del mando a distancia
   acelerador = mando.getJoistickIzquierdoY();
-  volante = mando.getJoistickDerechoX();
+  volante = 100-mando.getJoistickDerechoY();
+  if (volante >48 && volante <52) volante = 50;
   
   //aplicar logica a las intenciones
   velocidad = corregirVelocidad(acelerador);
