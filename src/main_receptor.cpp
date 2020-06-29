@@ -1,39 +1,40 @@
 #include <Arduino.h>
 #include "common_esp_now.h"
 
+struct_message data;
 
-void onRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
-    char macStr[18];
-    snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
-             mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4],
-             mac_addr[5]);
-    Serial.print("Last Packet Recv from: ");
-    Serial.println(macStr);
-    Serial.print("Last Packet Recv Data: ");
-    // if it could be a string, print as one
-    if (data[data_len - 1] == 0)
-        Serial.printf("%s\n", data);
-    // additionally print as hex
-    for (int i = 0; i < data_len; i++) {
-        Serial.printf("%x ", data[i]);
-    }
-    Serial.println("");
+// callback function that will be executed when data is received
+void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
+  memcpy(&data, incomingData, sizeof(data));
+  Serial.print("Bytes received: ");
+  Serial.print(len);
+  Serial.print(" - Int x: ");
+  Serial.print(data.x);
+  Serial.print(" - Int y: ");
+  Serial.print(data.y);
+  Serial.print(" - Boool e: ");
+  Serial.print(data.e);
+  Serial.println();
 }
 
 void setup(){
     Serial.begin(115200);
     Serial.println("ESPNow receiver Demo");
 
+    //Initialize ESP-NOW;
+    //You must initialize Wi-Fi before initializing ESP-NOW.
 #ifdef ESP8266
     WiFi.mode(WIFI_STA); // MUST NOT BE WIFI_MODE_NULL
 #elif ESP32
     WiFi.mode(WIFI_MODE_STA);
 #endif
+    if (esp_now_init() != ESP_OK) { //Initializes ESP-NOW. 
+        Serial.println("Error initializing ESP-NOW");
+        return;
+    } 
 
-    ESPNow.set_mac(MAC_MANDO);
-    WiFi.disconnect();
-    ESPNow.init();
-    ESPNow.reg_recv_cb(onRecv);
+    //Register for a receive callback function (OnDataRecv). This is a function that will be executed when a message is received.
+    esp_now_register_recv_cb(OnDataRecv);
 }
  
 void loop(){
