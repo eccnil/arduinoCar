@@ -18,6 +18,8 @@ public:
     int getX();
     int getY();
     bool getBtn();
+    void setOnClick(ButtonEvent f) {button.onClick = f;}
+    void setOnLongClick(ButtonEvent f) {button.onLongClick = f;}
 };
 
 Joystick::Joystick(char pinX, char pinY, char pinButton):
@@ -40,10 +42,6 @@ int Joystick::getX(){
 
 int Joystick::getY(){
     return ySensor.read();
-}
-bool Joystick::getBtn(){
-    //TODO: retrun button
-    return false;
 }
 
 Joystick::~Joystick()

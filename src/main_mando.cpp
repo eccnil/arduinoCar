@@ -16,6 +16,7 @@
 struct_message data;
 RGBLed led (RED_PIN, GREEN_PIN, BLUE_PIN, RGB_LED_COMMON_ANODE);
 Joystick joy(JOY_X, JOY_y, JOY_BTN);
+bool clicked = false;
 
 // callback when data is sent
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
@@ -27,6 +28,17 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
         led.setYellow();
     }
 }
+
+// callback de boton pulsado
+auto onclick = []() { 
+  clicked = true;
+};
+
+// callback de boton muy pulsado
+auto onLongClick = []() { 
+  led.setWhite();
+  delay(100);
+};
 
 void setup(){
     led.setCyan();
@@ -69,7 +81,8 @@ void setup(){
 
     //init joystick
     joy.setup();
-    
+    joy.setOnClick(onclick);
+    joy.setOnLongClick(onLongClick);
 }
  
 void loop(){
@@ -77,7 +90,8 @@ void loop(){
 
     data.x = joy.getX();
     data.y = joy.getY();
-    data.e = joy.getBtn();  
+    data.e = clicked;
+    clicked=false;  
 
     //Send a message to the peer device.
     if (ESP_OK != esp_now_send(MAC_RECEPTOR, (uint8_t*) &data, sizeof(data))){
@@ -86,5 +100,5 @@ void loop(){
     }
 
 
-    delay(1000);
+    delay(50);
 }
