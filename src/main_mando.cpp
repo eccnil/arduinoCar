@@ -5,8 +5,8 @@
 //ref: https://randomnerdtutorials.com/esp-now-esp32-arduino-ide/
 
 #define RED_PIN 27
-#define GREEN_PIN 25
-#define BLUE_PIN 26
+#define GREEN_PIN 26
+#define BLUE_PIN 25
 #define RGB_LED_COMMON_ANODE true
 
 struct_message data;
