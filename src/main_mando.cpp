@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "common_esp_now.h"
 #include "rgbled.hpp"
+#include "joystick.hpp"
 
 //ref: https://randomnerdtutorials.com/esp-now-esp32-arduino-ide/
 
@@ -8,9 +9,13 @@
 #define GREEN_PIN 26
 #define BLUE_PIN 25
 #define RGB_LED_COMMON_ANODE true
+#define JOY_X 34
+#define JOY_y 35
+#define JOY_BTN 32
 
 struct_message data;
 RGBLed led (RED_PIN, GREEN_PIN, BLUE_PIN, RGB_LED_COMMON_ANODE);
+Joystick joy(JOY_X, JOY_y, JOY_BTN);
 
 // callback when data is sent
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
@@ -61,13 +66,18 @@ void setup(){
         }
         return;
     }
+
+    //init joystick
+    joy.setup();
     
 }
  
 void loop(){
-    data.x ++;
-    data.y = random(10,20);
-    data.e = false;
+    joy.loop();
+
+    data.x = joy.getX();
+    data.y = joy.getY();
+    data.e = joy.getBtn();  
 
     //Send a message to the peer device.
     if (ESP_OK != esp_now_send(MAC_RECEPTOR, (uint8_t*) &data, sizeof(data))){
