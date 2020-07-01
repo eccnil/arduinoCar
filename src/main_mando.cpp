@@ -12,6 +12,7 @@
 #define JOY_X 34
 #define JOY_y 35
 #define JOY_BTN 32
+#define BTN_LEVEL 0 //1=high, 0=low , level for wakeup
 
 struct_message data;
 RGBLed led (RED_PIN, GREEN_PIN, BLUE_PIN, RGB_LED_COMMON_ANODE);
@@ -37,7 +38,9 @@ auto onclick = []() {
 // callback de boton muy pulsado
 auto onLongClick = []() { 
   led.setWhite();
-  delay(100);
+  delay(3000);
+  esp_sleep_enable_ext0_wakeup((gpio_num_t)JOY_BTN, BTN_LEVEL);
+  esp_deep_sleep_start();
 };
 
 void setup(){
