@@ -1,25 +1,43 @@
 #include <Arduino.h>
 #include "common_esp_now.h"
+#include <Arduino.h>
+#include "WheelESP32.h"
+#include "Coche.h"
+#include <NewPing.h> //sonar
 
-struct_message data;
+#define PIN_MOTOR_A_POW 9
+#define PIN_MOTOR_A_DIR 8
+#define PWM_CHANNEL_MOTOR_A 0
+#define PIN_MOTOR_B_POW 6
+#define PIN_MOTOR_B_DIR 7
+#define PWM_CHANNEL_MOTOR_B 1
+#define SONAR_ECHO_PIN 10
+#define SONAR_TRIGGER_PIN 11
+#define SONAR_DISTANCE 200
 
-// callback function that will be executed when data is received
+struct_message remoteCommand;
+Wheel ruedaDer(PIN_MOTOR_B_POW, PIN_MOTOR_B_DIR, PWM_CHANNEL_MOTOR_A);
+Wheel ruedaIzq(PIN_MOTOR_A_POW, PIN_MOTOR_A_DIR, PWM_CHANNEL_MOTOR_B);
+Coche coche(&ruedaIzq, &ruedaDer);
+NewPing ojos(SONAR_TRIGGER_PIN, SONAR_ECHO_PIN, SONAR_DISTANCE);
+int distanciaFrente = 0;
+
+int corregirVelocidad(int);
+int corregirGiro(int);
+void drive(int x, int y);
+
+// callback function that will be executed when data is received from 'mando'
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
-  memcpy(&data, incomingData, sizeof(data));
-  Serial.print("Bytes received: ");
-  Serial.print(len);
-  Serial.print(" - Int x: ");
-  Serial.print(data.x);
-  Serial.print(" - Int y: ");
-  Serial.print(data.y);
-  Serial.print(" - Boool e: ");
-  Serial.print(data.e);
-  Serial.println();
+  memcpy(&remoteCommand, incomingData, sizeof(remoteCommand));
+  drive(remoteCommand.x, remoteCommand.y);
 }
 
 void setup(){
     Serial.begin(115200);
-    Serial.println("ESPNow receiver Demo");
+    Serial.println("Car initiating");
+    coche.init();
+    Serial.println("Radio initiating");
+
 
     //Initialize ESP-NOW;
     //You must initialize Wi-Fi before initializing ESP-NOW.
@@ -35,8 +53,68 @@ void setup(){
 
     //Register for a receive callback function (OnDataRecv). This is a function that will be executed when a message is received.
     esp_now_register_recv_cb(OnDataRecv);
+    Serial.println("Car ready");
+
 }
  
-void loop(){
+void loop(){   
     yield();
+    //TODO: mover a otro hilo
+    distanciaFrente = ojos.ping_cm();
+    //TODO: llamar a drive desde aqui en vez de desde el mando o el radár no frenará
+}
+
+void drive(int x, int y){
+    int acelerador, volante;
+    int velocidad = 0; 
+    int giro = 0;
+
+    //calcular las posiciones del acelerador y volante
+    acelerador = map(y,0,0xFFF,-100,100);
+    volante = map(x,0,0x0FFF,-100,100);
+
+    //aplicar logica a las intenciones
+    velocidad = corregirVelocidad(acelerador);
+    giro = corregirGiro(volante);
+
+    //actuar sobre los motores
+    coche.setGiro(giro);
+    coche.setVelocidad(velocidad);
+
+     // depuración
+  
+    Serial.print(" ** mando: acelerador ");
+    Serial.print(acelerador);
+    Serial.print(" volante ");
+    Serial.print(volante);
+    Serial.print(" ** sensor: ");
+    Serial.print(distanciaFrente);
+    Serial.print(" ** motores: velocidad: ");
+    Serial.print(velocidad);
+    Serial.print(" giro: ");
+    Serial.print(giro);
+    Serial.println();
+}
+
+int corregirVelocidad( int v){
+    int result;
+    //haemos que los sensores nos frenen si vamos a chocar
+    bool nadacerca = distanciaFrente == 0 || distanciaFrente > 25; 
+    if(nadacerca || v <0 ){
+        //sesgo por el mando que tenemos (zona muerta)
+        if(result < 5 && result > -5 ) {
+            result = 0;
+        } else {
+            result = v;
+        }
+    } else {
+        result = 0;
+        Serial.print("para!");
+    }
+    return result;
+}
+
+int corregirGiro(int v){
+    if (v >-2 && v <2) v = 0; //deadzone
+    return v;
 }

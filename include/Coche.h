@@ -1,7 +1,11 @@
 #ifndef _COCHE_H_
 #define _COCHE_H_
 
-#include "Wheel.h"
+#ifdef ESP32
+    #include "WheelESP32.h"
+#else
+    #include "Wheel.h"
+#endif
 
 class Coche {
     // maxima diferencia de potencia en las ruedas de cada lado
