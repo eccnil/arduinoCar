@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 // Setting PWM properties
-const int freq = 30000;
+const int freq = 3000;
 const int pwmChannel = 0;
 const int resolution = 8;
 

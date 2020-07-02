@@ -5,19 +5,19 @@
 #include "Coche.h"
 #include <NewPing.h> //sonar
 
-#define PIN_MOTOR_A_POW 9
-#define PIN_MOTOR_A_DIR 8
+#define PIN_MOTOR_A_POW 25
+#define PIN_MOTOR_A_DIR 26
 #define PWM_CHANNEL_MOTOR_A 0
-#define PIN_MOTOR_B_POW 6
-#define PIN_MOTOR_B_DIR 7
+#define PIN_MOTOR_B_POW 33
+#define PIN_MOTOR_B_DIR 32
 #define PWM_CHANNEL_MOTOR_B 1
-#define SONAR_ECHO_PIN 10
-#define SONAR_TRIGGER_PIN 11
+#define SONAR_ECHO_PIN 15
+#define SONAR_TRIGGER_PIN 2
 #define SONAR_DISTANCE 200
 
 struct_message remoteCommand;
-Wheel ruedaDer(PIN_MOTOR_B_POW, PIN_MOTOR_B_DIR, PWM_CHANNEL_MOTOR_A);
-Wheel ruedaIzq(PIN_MOTOR_A_POW, PIN_MOTOR_A_DIR, PWM_CHANNEL_MOTOR_B);
+Wheel ruedaDer(PIN_MOTOR_B_POW, PIN_MOTOR_B_DIR, PWM_CHANNEL_MOTOR_B);
+Wheel ruedaIzq(PIN_MOTOR_A_POW, PIN_MOTOR_A_DIR, PWM_CHANNEL_MOTOR_A);
 Coche coche(&ruedaIzq, &ruedaDer);
 NewPing ojos(SONAR_TRIGGER_PIN, SONAR_ECHO_PIN, SONAR_DISTANCE);
 int distanciaFrente = 0;
