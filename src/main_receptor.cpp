@@ -32,7 +32,6 @@ void drive(int x, int y);
 // callback function that will be executed when data is received from 'mando'
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&remoteCommand, incomingData, sizeof(remoteCommand));
-  drive(remoteCommand.x, remoteCommand.y);
 }
 
 void setup(){
@@ -61,6 +60,7 @@ void setup(){
 }
  
 void loop(){   
+    drive(remoteCommand.x, remoteCommand.y);
     yield();
     //TODO: mover a otro hilo
     distanciaFrente = ojos.ping_cm();
@@ -104,7 +104,7 @@ void drive(int x, int y){
 }
 
 int corregirVelocidad( int v){
-    int result;
+    int result = v;
     //haemos que los sensores nos frenen si vamos a chocar
     bool nadacerca = distanciaFrente == 0 || distanciaFrente > 25; 
     if(nadacerca || v <0 ){
