@@ -37,11 +37,11 @@ void Joystick::loop(){
 }
 
 int Joystick::getX(){
-    return xSensor.read();
+    return xSensor.read(7);
 }
 
 int Joystick::getY(){
-    return ySensor.read();
+    return ySensor.read(7);
 }
 
 Joystick::~Joystick()
