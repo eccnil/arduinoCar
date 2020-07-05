@@ -38,7 +38,7 @@ public:
   }
   //speed range (0, 255) y (HIG | LOW)
   void move (int pmwInput, int direccion ){
-    Serial.print("-- ");Serial.print(pmwInput);Serial.print(" : ");Serial.println(direccion);
+    //Serial.print("-- ");Serial.print(pmwInput);Serial.print(" : ");Serial.println(direccion);
     ledcWrite(channel,pmwInput);
     digitalWrite(pintDir,direccion);
   }

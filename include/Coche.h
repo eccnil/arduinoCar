@@ -49,7 +49,7 @@ void Coche::actualizaRuedas(){
     if (d < -100) { i -= d - -100; d = -100; }
     if (i < -100) { d -= i - -100; i = -100; }
 
-    Serial.print("potencia a los motores: " );Serial.print(d);Serial.print(" , ");Serial.println(i);
+    //Serial.print("potencia a los motores: " );Serial.print(d);Serial.print(" , ");Serial.println(i);
     ruedaDer->move(d);
     ruedaIzq->move(i);
 }

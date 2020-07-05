@@ -44,6 +44,7 @@ auto onLongClick = []() {
 };
 
 void setup(){
+    Serial.begin(115200);
     led.setCyan();
     //Initialize ESP-NOW;
     //You must initialize Wi-Fi before initializing ESP-NOW.
@@ -101,7 +102,11 @@ void loop(){
         //Error sending the data -> red
         led.setRed();
     }
+    Serial.print(data.x);
+    Serial.print(',');
+    Serial.print(data.y);
+    Serial.println();
 
 
-    delay(50);
+    delay(200);
 }
