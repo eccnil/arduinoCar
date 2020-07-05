@@ -15,6 +15,9 @@
 #define SONAR_TRIGGER_PIN 2
 #define SONAR_DISTANCE 200
 
+#define rawXZero 2660
+#define rawYZero 2657
+
 struct_message remoteCommand;
 Wheel ruedaDer(PIN_MOTOR_B_POW, PIN_MOTOR_B_DIR, PWM_CHANNEL_MOTOR_B);
 Wheel ruedaIzq(PIN_MOTOR_A_POW, PIN_MOTOR_A_DIR, PWM_CHANNEL_MOTOR_A);
@@ -70,8 +73,8 @@ void drive(int x, int y){
     int giro = 0;
 
     //calcular las posiciones del acelerador y volante
-    acelerador = map(y,0,0xFFF,-100,100);
-    volante = map(x,0,0x0FFF,-100,100);
+    acelerador = x>rawXZero ? map(x,rawXZero+1,0xFFF,0,100): map(x,0,rawXZero,-100,0);
+    volante = y>rawYZero ? map(y,rawYZero+1,0xFFF,0,100): map(y,0,rawYZero,-100,0);
 
     //aplicar logica a las intenciones
     velocidad = corregirVelocidad(acelerador);
@@ -82,7 +85,11 @@ void drive(int x, int y){
     coche.setVelocidad(velocidad);
 
      // depuración
-  
+    Serial.print("xy mando");
+    Serial.print(x);
+    Serial.print(',');
+    Serial.print(y);
+    Serial.print(" -");
     Serial.print(" ** mando: acelerador ");
     Serial.print(acelerador);
     Serial.print(" volante ");
