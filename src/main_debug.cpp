@@ -11,12 +11,12 @@
 #define PIN_MOTOR_B_POW 33
 #define PIN_MOTOR_B_DIR 32
 #define PWM_CHANNEL_MOTOR_B 1
-#define SONAR_ECHO_PIN 15
+#define SONAR_ECHO_PIN 16
 #define SONAR_TRIGGER_PIN 2
 #define SONAR_DISTANCE 200
 
-unsigned int centerX = 0xFFFF; 
-unsigned int centerY = 0xFFFF;
+#define rawXZero 2660
+#define rawYZero 2657
 
 struct_message remoteCommand;
 Wheel ruedaDer(PIN_MOTOR_B_POW, PIN_MOTOR_B_DIR, PWM_CHANNEL_MOTOR_B);
@@ -27,7 +27,7 @@ int distanciaFrente = 0;
 
 int corregirVelocidad(int);
 int corregirGiro(int);
-void drive(int x, int y, bool e);
+void drive(int x, int y);
 
 // callback function that will be executed when data is received from 'mando'
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
@@ -60,27 +60,21 @@ void setup(){
 }
  
 void loop(){   
-    //if button is pressed calibrate center position of joistick
-    if (remoteCommand.e) {
-        centerX = remoteCommand.x;
-        centerY = remoteCommand.y;
-    }
-    //do drive
-    drive(remoteCommand.x, remoteCommand.y, remoteCommand.e);
+    drive(remoteCommand.x, remoteCommand.y);
     yield();
     //TODO: mover a otro hilo
-    distanciaFrente = ojos.ping_cm();
+    //distanciaFrente = ojos.ping_cm();
     //TODO: llamar a drive desde aqui en vez de desde el mando o el radár no frenará
 }
 
-void drive(int x, int y, bool e){
+void drive(int x, int y){
     int acelerador, volante;
     int velocidad = 0; 
     int giro = 0;
 
     //calcular las posiciones del acelerador y volante
-    acelerador =  map(x,0,centerX*2,-100,100);
-    volante = map(y,0,centerY*2,100,-100);
+    acelerador = x>rawXZero ? map(x,rawXZero+1,0xFFF,0,100): map(x,0,rawXZero,-100,0);
+    volante = y>rawYZero ? map(y,rawYZero+1,0xFFF,0,100): map(y,0,rawYZero,-100,0);
 
     //aplicar logica a las intenciones
     velocidad = corregirVelocidad(acelerador);
@@ -91,31 +85,25 @@ void drive(int x, int y, bool e){
     coche.setVelocidad(velocidad);
 
      // depuración
-    //Serial.print("x_mando ");
-    //Serial.print(x);
-    //Serial.print(" y_mando ");
-    //Serial.print(y);
-    //Serial.print(e);
-    //Serial.print(" acelerador_mando ");
-    //Serial.print(acelerador);
-    //Serial.print(" volante_mando ");
-    //Serial.print(volante);
-    //Serial.print(" distancia ");
-    //Serial.print(distanciaFrente);
-    Serial.print(" velocidad_motores: ");
+    Serial.print("xy mando");
+    Serial.print(x);
+    Serial.print(',');
+    Serial.print(y);
+    Serial.print(" -");
+    Serial.print(" ** mando: acelerador ");
+    Serial.print(acelerador);
+    Serial.print(" volante ");
+    Serial.print(volante);
+    Serial.print(" ** sensor: ");
+    Serial.print(distanciaFrente);
+    Serial.print(" ** motores: velocidad: ");
     Serial.print(velocidad);
-    Serial.print(" giro_motores: ");
+    Serial.print(" giro: ");
     Serial.print(giro);
-    Serial.print(" motor_der ");
-    Serial.print(coche.ruedaDer->getCurrentPow());
-    Serial.print(" motor_Izq ");
-    Serial.print(coche.ruedaIzq->getCurrentPow());
     Serial.println();
 }
 
 int corregirVelocidad( int v){
-    if (v>100) v=100;
-    if (v< -100) v=-100;
     int result = v;
     //haemos que los sensores nos frenen si vamos a chocar
     bool nadacerca = distanciaFrente == 0 || distanciaFrente > 25; 
@@ -134,8 +122,6 @@ int corregirVelocidad( int v){
 }
 
 int corregirGiro(int v){
-    if (v>100) v=100;
-    if (v< -100) v=-100;
     if (v >-2 && v <2) v = 0; //deadzone
     return v;
 }

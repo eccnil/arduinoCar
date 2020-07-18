@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 // Setting PWM properties
-const int freq = 3000;
+const int freq = 10000;
 const int pwmChannel = 0;
 const int resolution = 8;
 
@@ -13,6 +13,7 @@ class  Wheel {
   int pintDir;
   static const int MIN_INPUT = 75; //min value that produces movement (adjust it)
   int channel;
+  int lastPwmPow = 0;
 public:
   Wheel(int PIN_POW, int PIN_DIR, int channel=0){
     pinPow=PIN_POW;
@@ -39,8 +40,12 @@ public:
   //speed range (0, 255) y (HIG | LOW)
   void move (int pmwInput, int direccion ){
     //Serial.print("-- ");Serial.print(pmwInput);Serial.print(" : ");Serial.println(direccion);
+    lastPwmPow = pmwInput;
     ledcWrite(channel,pmwInput);
     digitalWrite(pintDir,direccion);
+  }
+  int getCurrentPow(){
+    return lastPwmPow;
   }
 };
 
