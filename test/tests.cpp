@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#define TESTWHEEL
+#define TESTTACOMETER
 
 #define PIN_MOTOR_A_POW 25
 #define PIN_MOTOR_A_DIR 26
@@ -60,6 +60,32 @@
     }
 #endif
 
+#ifdef TESTTACOMETER
+    #include "tacometer.h"
+    #define PIN_TACOMETRO_A 4
+
+    volatile int counter = 0;
+
+    volatile tacometerInterruptionStruct tacometroISR_A;
+    Tacometer tacometroIzq(PIN_TACOMETRO_A,  & tacometroISR_A , 200, 20);
+    void ISR_A () { counter++ ; tacometerISRHandler(tacometroIzq); }
+
+    void testSetup(){
+        attachInterrupt(digitalPinToInterrupt(PIN_TACOMETRO_A), ISR_A, FALLING);
+    }
+    void testLoop(){
+        delay(20);
+        long period = tacometroISR_A.period;
+        //Serial.print(counter);
+        //Serial.print(" ");
+        //Serial.print(period);
+        //Serial.print(" ");
+        //Serial.print(tacometroIzq.getPeriod());
+        //Serial.print(" ");
+        Serial.print(tacometroIzq.getRPMs());
+        Serial.println();
+    }
+#endif
 
 
 
@@ -67,7 +93,7 @@
 void setup(){
     Serial.begin(115200);
     Serial.println("test initiating");
-    testLoop();
+    testSetup();
 }
  
 void loop(){  

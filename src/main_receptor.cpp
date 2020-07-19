@@ -4,6 +4,7 @@
 #include "WheelESP32.h"
 #include "Coche.h"
 #include <NewPing.h> //sonar
+#include "tacometer.h"
 
 #define PIN_MOTOR_A_POW 25
 #define PIN_MOTOR_A_DIR 26
@@ -14,6 +15,8 @@
 #define SONAR_ECHO_PIN 15
 #define SONAR_TRIGGER_PIN 2
 #define SONAR_DISTANCE 200
+#define PIN_TACOMETRO_A 4
+#define PIN_TACOMETRO_B 5
 
 unsigned int centerX = 0xFFFF; 
 unsigned int centerY = 0xFFFF;
@@ -23,6 +26,9 @@ Wheel ruedaDer(PIN_MOTOR_B_POW, PIN_MOTOR_B_DIR, PWM_CHANNEL_MOTOR_B);
 Wheel ruedaIzq(PIN_MOTOR_A_POW, PIN_MOTOR_A_DIR, PWM_CHANNEL_MOTOR_A);
 Coche coche(&ruedaIzq, &ruedaDer);
 NewPing ojos(SONAR_TRIGGER_PIN, SONAR_ECHO_PIN, SONAR_DISTANCE);
+volatile tacometerInterruptionStruct tacometroISR_A;
+Tacometer tacometroIzq(PIN_TACOMETRO_A,  & tacometroISR_A , 200, 20);
+void ISR_A () { tacometerISRHandler(tacometroIzq); }
 int distanciaFrente = 0;
 
 int corregirVelocidad(int);
@@ -34,13 +40,18 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&remoteCommand, incomingData, sizeof(remoteCommand));
 }
 
+
+
 void setup(){
     Serial.begin(115200);
     Serial.println("Car initiating");
     coche.init();
+ 
+    Serial.println("tacometers initiating");
+    attachInterrupt(digitalPinToInterrupt(PIN_TACOMETRO_A), ISR_A, FALLING);
+
+
     Serial.println("Radio initiating");
-
-
     //Initialize ESP-NOW;
     //You must initialize Wi-Fi before initializing ESP-NOW.
 #ifdef ESP8266
